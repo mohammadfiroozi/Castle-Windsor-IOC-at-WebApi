@@ -17,7 +17,7 @@ IoC is a design principle which recommends inversion of different kinds of contr
 
 The easiest way to reference windsor library is using Nuget package installer :
 
-:+1: install-package Castle.Windsor
+install-package Castle.Windsor
 
 **2.CastleConfig Class**
 
@@ -30,7 +30,7 @@ create a customize ControllerActivator class that driven from IHttpControllerAct
 **4.Introduce the ControllerActivator in Global.Asax**
 
 
-Good luck / Mohammad firoozi (http://firoozi.info)
+:+1:Good luck / Mohammad firoozi (http://firoozi.info)
 
 
 
