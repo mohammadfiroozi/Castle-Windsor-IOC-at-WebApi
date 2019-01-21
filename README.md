@@ -19,15 +19,15 @@ The easiest way to reference windsor library is using Nuget package installer :
 
 :+1: install-package Castle.Windsor
 
-**2.CastleConfig Class
+**2.CastleConfig Class**
 
 create a class to configure the dependency into app_start folder (same the sample)
 
-**3.Implement the Customize ControllerActivator 
+**3.Implement the Customize ControllerActivator**
 
 create a customize ControllerActivator class that driven from IHttpControllerActivator into app_start folder
 
-**4.Introduce the ControllerActivator in Global.Asax
+**4.Introduce the ControllerActivator in Global.Asax**
 
 
 Good luck / Mohammad firoozi (http://firoozi.info)
