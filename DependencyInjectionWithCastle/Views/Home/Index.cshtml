@@ -1,0 +1,213 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h2>Gravity of Iran</h2>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="clearTextBox();">Add New Gravity</button><br /><br />
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+
+                <th>
+                    Title
+                </th>
+                <th>
+                    Location
+                </th>
+                <th>
+                    Description
+                </th>
+
+                <th>
+                    Action
+                </th>
+            </tr>
+        </thead>
+        <tbody class="tbody"></tbody>
+    </table>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title" id="myModalLabel">Iran Gravity</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+
+                    <div class="form-group">
+                        <label for="Title">Title</label>
+                        <input type="text" class="form-control" id="Title" placeholder="Title" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Location">Location</label>
+                        <input type="text" class="form-control" id="Location" placeholder="Location" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Description">Description</label>
+                        <input type="text" class="form-control" id="Description" placeholder="Description" />
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnInsert" onclick="Insert();"> Insert </button>
+                <button type="button" class="btn btn-primary" id="btnUpdate" style="display:none;" onclick="Update();">Update</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+
+@*Ajax Scripts*@
+<script type="text/javascript">
+
+    var uri = '/api/IranGravity';
+    var gravityId;
+
+
+    $(document).ready(function () {
+        loadData();
+    });
+
+
+    function loadData() {
+
+
+
+
+        $.getJSON(uri).done(function (data) {
+            var html = '';
+            $.each(data, function (key, item) {
+
+                html += '<tr>';
+                html += '<td>' + item.Title + '</td>';
+                html += '<td>' + item.Location + '</td>';
+                html += '<td>' + item.Description + '</td>';
+
+                html += '<td><a href="#" onclick="return getbyID(' + item.Id + ')">Edit</a> | <a href="#" onclick="Delele(' + item.Id + ')">Delete</a></td>';
+                html += '</tr>';
+            });
+
+            $('.tbody').html(html);
+
+        });
+
+    };
+
+
+    function getbyID(Id) {
+        $('#Title').css('border-color', 'lightgrey');
+        $('#Location').css('border-color', 'lightgrey');
+        $('#Description').css('border-color', 'lightgrey');
+        $.getJSON(uri + '/' + Id)
+            .done(function (data) {
+                $('#Id').val(data.Id);
+                $('#Title').val(data.Title);
+                $('#Description').val(data.Description);
+                $('#Location').val(data.Location);
+                $('#myModal').modal('show');
+                $('#btnUpdate').show();
+                $('#btnInsert').hide();
+                gravityId = data.Id;
+            })
+            .fail(function (jqXHR, textStatus, err) {
+                alert(errormessage.responseText);
+            });
+        return false;
+    }
+    function Insert() {
+
+        var gravityObj = {
+
+            Title: $('#Title').val(),
+            Description: $('#Description').val(),
+            Location: $('#Location').val(),
+
+        };
+        $.ajax({
+            url: uri,
+            data: JSON.stringify(gravityObj),
+            type: "POST",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                loadData();
+                $('#myModal').modal('hide');
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    };
+
+    function clearTextBox() {
+        
+        $('#Title').val("");
+        $('#Description').val("");
+        $('#Location').val("");
+        $('#btnUpdate').hide();
+        $('#btnAdd').show();
+        $('#Location').css('border-color', 'lightgrey');
+        $('#Description').css('border-color', 'lightgrey');
+        $('#Title').css('border-color', 'lightgrey');
+
+    }
+
+
+    function Update(Id) {
+
+        var gravityObj = {
+            Id: gravityId,
+            Title: $('#Title').val(),
+            Description: $('#Description').val(),
+            Location: $('#Location').val(),
+
+        };
+        $.ajax({
+            url: uri,
+            data: JSON.stringify(gravityObj),
+            type: "PUT",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                loadData();
+                $('#myModal').modal('hide');
+               
+                $('#Title').val("");
+                $('#Location').val("");
+                $('#Description').val("");
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+
+    function Delele(Id) {
+        var answer = confirm("Are you sure ?");
+        if (answer) {
+            $.ajax({
+                url: uri + "/" + Id,
+                type: "Delete",
+                contentType: "application/json;charset=UTF-8",
+                dataType: "json",
+                success: function (result) {
+                    loadData();
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+
+</script>
+
